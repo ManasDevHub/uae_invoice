@@ -14,6 +14,8 @@ FROM python:3.13-slim
 
 # Install nginx, supervisor, and gettext-base (for envsubst)
 RUN apt-get update && apt-get install -y nginx supervisor gettext-base && \
+    mkdir -p /var/log/supervisor /var/run/supervisor /var/cache/nginx /var/run/nginx && \
+    chmod -R 777 /var/log/supervisor /var/run/supervisor /var/cache/nginx /var/run/nginx /etc/nginx/sites-available /etc/nginx/sites-enabled && \
     rm -rf /var/lib/apt/lists/*
 
 # Backend
