@@ -10,7 +10,7 @@ VALID_KEYS = {
 
 class APIKeyMiddleware(BaseHTTPMiddleware):
     # Routes that don't require API key validation
-    EXEMPT_PREFIXES = {"/assets", "/docs", "/openapi.json", "/health", "/metrics", "/docs", "/redoc"}
+    EXEMPT_PREFIXES = {"/assets", "/docs", "/openapi.json", "/health", "/metrics", "/docs", "/redoc", "/auth"}
     EXEMPT_EXACT = {"/", "/favicon.svg", "/icons.svg"}
 
     async def dispatch(self, request: Request, call_next):

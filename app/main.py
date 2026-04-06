@@ -10,6 +10,7 @@ from app.api.health import router as health_router
 from app.api.batch import router as batch_router
 from app.api.history import router as history_router
 from app.api.analytics import router as analytics_router
+from app.api.auth_router import router as auth_router
 from app.core.config import settings
 from app.core.logging import RequestLoggingMiddleware, log
 from app.middleware.auth import APIKeyMiddleware
@@ -79,6 +80,7 @@ app.mount("/metrics", metrics_app)
 
 # Routers
 app.include_router(health_router, prefix="/health", tags=["Health Probes"])
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(validate_router, prefix="/api/v1", tags=["Internal Validation"])
 app.include_router(batch_router, prefix="/api/v1", tags=["Batch Processing"])
 app.include_router(history_router, prefix="/api/v1", tags=["History API"])

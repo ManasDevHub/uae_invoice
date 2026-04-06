@@ -1,9 +1,0 @@
-# ngrok-multi.yml
-authtoken: 3Byi7Ll873hZZJbWf84ATiVrdRi_4jN21k1abGYsBKnnybm1U
-tunnels:
-  frontend:
-    addr: 5173
-    proto: http
-  api:
-    addr: 8000
-    proto: http
