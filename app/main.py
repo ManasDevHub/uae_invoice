@@ -100,16 +100,19 @@ async def health_ready():
 if os.path.exists(STATIC_DIR):
     app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
 
-# Catch-all: serve index.html for ALL non-API routes
-# This fixes React Router — /validate, /history etc all work on reload
-@app.get("/{full_path:path}")
+# Catch-all route — serves index.html for every non-API path
+# This fixes React Router (reload on /validate, /history etc works)
+@app.get("/{full_path:path}", include_in_schema=False)
 async def serve_react(full_path: str):
-    # Don't intercept API routes
-    if full_path.startswith(("api/", "asp/", "health/", "docs", "openapi")):
+    # Don't intercept API or docs routes
+    api_prefixes = ("api/", "asp/", "health/", "docs", "openapi.json", "redoc")
+    if any(full_path.startswith(p) for p in api_prefixes):
         from fastapi import HTTPException
-        raise HTTPException(status_code=404)
+        raise HTTPException(status_code=404, detail="Not found")
     
-    index = os.path.join(STATIC_DIR, "index.html")
-    if os.path.exists(index):
-        return FileResponse(index)
-    return {"message": "UAE PINT AE Engine running", "docs": "/docs"}
+    index_file = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    
+    # Fallback if the frontend build isn't ready
+    return {"message": "UAE PINT AE Engine", "docs": "/docs"}
