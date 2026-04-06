@@ -10,9 +10,16 @@ import Integrations from './pages/Integrations'
 import Settings from './pages/Settings'
 import Users from './pages/Users'
 
+import { useEffect } from 'react'
+
 export default function App() {
+  useEffect(() => {
+    // Wake up the backend immediately on page load (Render free tier cold start)
+    fetch('/health/live').catch(() => {})
+  }, [])
+
   return (
-    <BrowserRouter basename="/uae_invoice/">
+    <BrowserRouter>
       <Shell>
         <Toaster position="top-right" toastOptions={{ className: 'text-sm font-medium border border-[#e3eaf7] shadow-sm' }} />
         <Routes>

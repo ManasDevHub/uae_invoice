@@ -85,19 +85,31 @@ app.include_router(history_router, prefix="/api/v1", tags=["History API"])
 app.include_router(analytics_router, prefix="/api/v1", tags=["Analytics API"])
 app.include_router(mock_router, prefix="/asp/v1", tags=["ASP Mock Simulation"])
 
-@app.get("/")
-def read_root():
-    return FileResponse("frontend/dist/index.html")
+# ── Serve React build ──
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "static")
 
-# Serve static files from the dist folder
-if os.path.exists("frontend/dist"):
-    app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+@app.get("/health/live")
+async def health_live():
+    return {"status": "ok"}
+
+@app.get("/health/ready")  
+async def health_ready():
+    return {"status": "ok"}
+
+# Serve static assets (JS, CSS, images)
+if os.path.exists(STATIC_DIR):
+    app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
+
+# Catch-all: serve index.html for ALL non-API routes
+# This fixes React Router — /validate, /history etc all work on reload
+@app.get("/{full_path:path}")
+async def serve_react(full_path: str):
+    # Don't intercept API routes
+    if full_path.startswith(("api/", "asp/", "health/", "docs", "openapi")):
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404)
     
-    @app.get("/{rest_of_path:path}")
-    async def react_spa_router(rest_of_path: str):
-        # Look for the file in the dist folder
-        file_path = os.path.join("frontend/dist", rest_of_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-        # Otherwise, return index.html for React routing
-        return FileResponse("frontend/dist/index.html")
+    index = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index):
+        return FileResponse(index)
+    return {"message": "UAE PINT AE Engine running", "docs": "/docs"}

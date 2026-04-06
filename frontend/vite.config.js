@@ -4,7 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/uae_invoice/",
   server: {
     port: 5173,
     allowedHosts: true,
@@ -13,5 +12,9 @@ export default defineConfig({
       '/asp': 'http://localhost:8000',
       '/health': 'http://localhost:8000',
     }
+  },
+  build: {
+    outDir: '../static',
+    emptyOutDir: true,
   }
 })
