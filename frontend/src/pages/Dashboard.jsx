@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Card from '../components/ui/Card'
+import { API_BASE } from '../constants/api'
 import TrendChart from '../components/charts/TrendChart'
 import Pill from '../components/ui/Pill'
 import { Link } from 'react-router-dom'
@@ -11,7 +12,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/v1/analytics/summary', { 
+        const res = await fetch(`${API_BASE}/api/v1/analytics/summary`, { 
           headers: { 
             'X-API-Key': 'demo-key-123',
             'ngrok-skip-browser-warning': 'true'

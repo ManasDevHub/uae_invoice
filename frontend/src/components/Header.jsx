@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { API_BASE } from '../constants/api'
 import { Activity, Moon, Sun, Zap } from 'lucide-react'
 
 export default function Header({ darkMode, onToggleDark }) {
@@ -8,7 +9,7 @@ export default function Header({ darkMode, onToggleDark }) {
     const check = async () => {
       setHealth('checking')
       try {
-        const r = await fetch('/health/live', { signal: AbortSignal.timeout(3000) })
+        const r = await fetch(`${API_BASE}/health/live`, { signal: AbortSignal.timeout(3000) })
         setHealth(r.ok ? 'online' : 'offline')
       } catch {
         setHealth('offline')
