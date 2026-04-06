@@ -12,8 +12,8 @@ RUN npm run build
 # ── Stage 2: Python backend + nginx ───────────────────
 FROM python:3.13-slim
 
-# Install nginx and supervisor
-RUN apt-get update && apt-get install -y nginx supervisor && \
+# Install nginx, supervisor, and gettext-base (for envsubst)
+RUN apt-get update && apt-get install -y nginx supervisor gettext-base && \
     rm -rf /var/lib/apt/lists/*
 
 # Backend
@@ -25,12 +25,17 @@ COPY app/ ./app/
 # Copy built frontend into nginx html folder
 COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
-# Copy nginx config
-COPY nginx/nginx.conf /etc/nginx/sites-available/default
+# Copy nginx template (will be substituted at runtime)
+COPY nginx/nginx.conf.template /etc/nginx/sites-available/default.template
 
 # Supervisor config to run both nginx and uvicorn
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Copy startup script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Dynamic port handled by Railway
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/bin/bash", "/app/start.sh"]
