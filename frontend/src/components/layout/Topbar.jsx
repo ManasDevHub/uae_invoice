@@ -19,7 +19,7 @@ export default function Topbar() {
         </button>
         <div className="h-12 pl-6 pr-2 border-l border-[#e3eaf7] flex items-center">
           <img 
-            src="/assets/adamas-logo.png" 
+            src="assets/adamas-logo.png" 
             alt="Adamas Tech Consulting"
             className="h-12 max-w-[200px] object-contain"
           />

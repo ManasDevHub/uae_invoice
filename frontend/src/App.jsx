@@ -12,7 +12,7 @@ import Users from './pages/Users'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/uae_invoice/">
       <Shell>
         <Toaster position="top-right" toastOptions={{ className: 'text-sm font-medium border border-[#e3eaf7] shadow-sm' }} />
         <Routes>
